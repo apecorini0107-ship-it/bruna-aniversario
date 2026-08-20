@@ -46,7 +46,7 @@ export default function SurpriseQuestion({ onYes }: { onYes: () => void }) {
     setNoClicks((c) => c + 1);
     setShowJoke(true);
     setTossing(true);
-    setTimeout(() => setTossing(false), 850);
+    setTimeout(() => setTossing(false), 950);
   };
 
   const joke = JOKES[Math.min(noClicks - 1, JOKES.length - 1)] ?? JOKES[0];
@@ -100,12 +100,12 @@ export default function SurpriseQuestion({ onYes }: { onYes: () => void }) {
                   initial={{ opacity: 0, scale: 0.5, y: 8 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{
-                    x: [0, 16, 6],
-                    y: [0, -42, 36],
-                    scale: [1, 1.05, 0.15],
-                    rotate: [0, -12, 380],
+                    x: [0, 38, 86],
+                    y: [0, -38, 104],
+                    scale: [1, 1.05, 0.1],
+                    rotate: [0, -14, 420],
                     opacity: [1, 1, 0],
-                    transition: { duration: 0.6, times: [0, 0.4, 1], ease: "easeIn" },
+                    transition: { duration: 0.75, times: [0, 0.4, 1], ease: "easeIn" },
                   }}
                   transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                   className="absolute inset-0 flex items-center justify-center rounded-full border border-bordeaux/25 bg-white/40 text-sm font-medium text-bordeaux-dark/80 backdrop-blur-sm"
@@ -117,15 +117,24 @@ export default function SurpriseQuestion({ onYes }: { onYes: () => void }) {
 
             <motion.div
               aria-hidden
-              className="pointer-events-none absolute -bottom-9 left-1/2 -translate-x-1/2 text-bordeaux-dark/45"
+              className="pointer-events-none absolute -bottom-24 -right-8 text-bordeaux-dark/45"
+              initial={{ opacity: 0, scale: 0.5, rotate: 0 }}
               animate={
                 tossing
-                  ? { scale: [1, 1, 1.3, 1], rotate: [0, 0, -10, 8, 0] }
-                  : { scale: 1, rotate: 0 }
+                  ? {
+                      opacity: [0, 1, 1, 0],
+                      scale: [0.5, 1, 1.25, 0.6],
+                      rotate: [0, 0, -10, 8],
+                    }
+                  : { opacity: 0, scale: 0.5, rotate: 0 }
               }
-              transition={{ duration: 0.55, delay: tossing ? 0.35 : 0, ease: "easeOut" }}
+              transition={{
+                duration: 0.8,
+                times: tossing ? [0, 0.3, 0.62, 1] : undefined,
+                ease: "easeOut",
+              }}
             >
-              <Trash2 className="h-6 w-6" />
+              <Trash2 className="h-7 w-7" />
             </motion.div>
           </div>
 

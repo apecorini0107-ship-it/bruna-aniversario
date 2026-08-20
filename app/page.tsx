@@ -12,12 +12,14 @@ import { screenVariants } from "@/lib/motion";
 
 type Step = "intro" | "question" | "reveal" | "options" | "final";
 
+const SCREEN_CLASS = "absolute inset-0 overflow-y-auto";
+
 export default function Home() {
   const [step, setStep] = useState<Step>("intro");
 
   return (
     <MotionConfig reducedMotion="user">
-      <main className="relative flex min-h-[100dvh] w-full flex-col">
+      <main className="relative min-h-[100dvh] w-full">
         <Background />
 
         <AnimatePresence>
@@ -28,6 +30,7 @@ export default function Home() {
               initial="hidden"
               animate="visible"
               exit="exit"
+              className={SCREEN_CLASS}
             >
               <Intro onContinue={() => setStep("question")} />
             </motion.div>
@@ -40,6 +43,7 @@ export default function Home() {
               initial="hidden"
               animate="visible"
               exit="exit"
+              className={SCREEN_CLASS}
             >
               <SurpriseQuestion onYes={() => setStep("reveal")} />
             </motion.div>
@@ -52,6 +56,7 @@ export default function Home() {
               initial="hidden"
               animate="visible"
               exit="exit"
+              className={SCREEN_CLASS}
             >
               <Reveal onContinue={() => setStep("options")} />
             </motion.div>
@@ -64,6 +69,7 @@ export default function Home() {
               initial="hidden"
               animate="visible"
               exit="exit"
+              className={SCREEN_CLASS}
             >
               <OptionsGrid onContinue={() => setStep("final")} />
             </motion.div>
@@ -76,6 +82,7 @@ export default function Home() {
               initial="hidden"
               animate="visible"
               exit="exit"
+              className={SCREEN_CLASS}
             >
               <FinalSection />
             </motion.div>

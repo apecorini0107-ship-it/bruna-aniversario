@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Heart } from "lucide-react";
+import { Heart, Trash2 } from "lucide-react";
 import { lineVariant } from "@/lib/motion";
 
 const LINES = [
@@ -23,7 +23,7 @@ export default function SurpriseQuestion({ onYes }: { onYes: () => void }) {
   const [showQuestion, setShowQuestion] = useState(false);
   const [noClicks, setNoClicks] = useState(0);
   const [showJoke, setShowJoke] = useState(false);
-  const [noOffset, setNoOffset] = useState({ x: 0, y: 0 });
+  const [tossing, setTossing] = useState(false);
 
   useEffect(() => {
     if (visible < LINES.length) {
@@ -45,14 +45,10 @@ export default function SurpriseQuestion({ onYes }: { onYes: () => void }) {
   const handleNo = () => {
     setNoClicks((c) => c + 1);
     setShowJoke(true);
-    const range = 46;
-    setNoOffset({
-      x: Math.round((Math.random() - 0.5) * range * 2),
-      y: Math.round((Math.random() - 0.5) * (range * 0.6)),
-    });
+    setTossing(true);
+    setTimeout(() => setTossing(false), 850);
   };
 
-  const noScale = Math.max(0.72, 1 - noClicks * 0.045);
   const joke = JOKES[Math.min(noClicks - 1, JOKES.length - 1)] ?? JOKES[0];
 
   return (
@@ -95,19 +91,43 @@ export default function SurpriseQuestion({ onYes }: { onYes: () => void }) {
             SIM <Heart className="h-4 w-4" fill="currentColor" strokeWidth={0} />
           </motion.button>
 
-          <motion.button
-            onClick={handleNo}
-            animate={{
-              x: noOffset.x,
-              y: noOffset.y,
-              scale: noScale,
-              rotate: noClicks % 2 === 0 ? 0 : -3,
-            }}
-            transition={{ type: "spring", stiffness: 300, damping: 12 }}
-            className="rounded-full border border-bordeaux/25 bg-white/40 px-6 py-3 text-sm font-medium text-bordeaux-dark/80 backdrop-blur-sm"
-          >
-            Não
-          </motion.button>
+          <div className="relative h-[46px] w-[92px]">
+            <AnimatePresence>
+              {!tossing && (
+                <motion.button
+                  key="nao-btn"
+                  onClick={handleNo}
+                  initial={{ opacity: 0, scale: 0.5, y: 8 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{
+                    x: [0, 16, 6],
+                    y: [0, -42, 36],
+                    scale: [1, 1.05, 0.15],
+                    rotate: [0, -12, 380],
+                    opacity: [1, 1, 0],
+                    transition: { duration: 0.6, times: [0, 0.4, 1], ease: "easeIn" },
+                  }}
+                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute inset-0 flex items-center justify-center rounded-full border border-bordeaux/25 bg-white/40 text-sm font-medium text-bordeaux-dark/80 backdrop-blur-sm"
+                >
+                  Não
+                </motion.button>
+              )}
+            </AnimatePresence>
+
+            <motion.div
+              aria-hidden
+              className="pointer-events-none absolute -bottom-9 left-1/2 -translate-x-1/2 text-bordeaux-dark/45"
+              animate={
+                tossing
+                  ? { scale: [1, 1, 1.3, 1], rotate: [0, 0, -10, 8, 0] }
+                  : { scale: 1, rotate: 0 }
+              }
+              transition={{ duration: 0.55, delay: tossing ? 0.35 : 0, ease: "easeOut" }}
+            >
+              <Trash2 className="h-6 w-6" />
+            </motion.div>
+          </div>
 
           <AnimatePresence>
             {showJoke && (
